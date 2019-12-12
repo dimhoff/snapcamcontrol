@@ -1,0 +1,130 @@
+/**
+ * busy_screen.css - Fullscreen busy waiting screen
+ *
+ * Copyright (c) 2019 David Imhoff <dimhoff.devel <at> gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+#busyScreen {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(120, 120, 120, 50%);
+}
+
+#busyScreen > div:first-child {
+  position: absolute;
+  height: 150px;
+  width: 100%;
+  /* Center box */
+  top: 0; left: 0; bottom: 0; right: 0;
+  margin: auto;
+}
+
+#busySpinner {
+  width: 200px;
+  height: 125px;
+  margin: auto;
+}
+
+#busySpinner div {
+  box-sizing: border-box;
+  padding:10px;
+  border-radius: 50%;
+  border-width: 20px;
+  border-style: solid;
+  border-color: transparent;
+/*  border-top-color: black;*/
+
+  animation-duration: 4s;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+/* 3rd/Outer arch */
+#busySpinner > div {
+  width: 200px;
+  height: 200px;
+  animation-name: lightup75;
+}
+/* 2nd arch */
+#busySpinner > div > div {
+  animation-name: lightup50;
+}
+/* 1st arch */
+#busySpinner > div > div > div {
+  animation-name: lightup25;
+}
+/* inner circle */
+#busySpinner > div > div > div > div {
+  padding: 0px;
+  border-color: black;
+  border-width: 10px;
+  width: 0px;
+  height: 0px;
+  margin: auto;
+}
+
+@keyframes lightup25 {
+  5% { /* Start color change from here */
+    border-top-color: transparent;
+  }
+  25% {
+    border-top-color: black;
+  }
+  90% { /* Stay black till here */
+    border-top-color: black;
+  }
+}
+@keyframes lightup50 {
+  25% { /* Start color change from here */
+    border-top-color: transparent;
+  }
+  50% {
+    border-top-color: black;
+  }
+  90% { /* Stay black till here */
+    border-top-color: black;
+  }
+}
+@keyframes lightup75 {
+  50% { /* Start color change from here */
+    border-top-color: transparent;
+  }
+  75% {
+    border-top-color: black;
+  }
+  90% { /* Stay black till here */
+    border-top-color: black;
+  }
+}
+
+#busyMsg {
+  width: 100%;
+  text-align: center;
+  font-size: large;
+}
+#busyMsgTxt {
+  background-color: lightgrey;
+  padding: 1px 10px;
+  border-radius: 15px;
+}

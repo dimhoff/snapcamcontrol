@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!--
+Copyright (c) 2019 David Imhoff <dimhoff.devel <at> gmail.com>
+
+This work is licensed under the Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0 International License.
+To view a copy of this license, visit
+http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
+Commons, PO Box 1866, Mountain View, CA 94042, USA.
+  -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Control for iON SnapCam™</title>
+  <link rel="stylesheet" href="busy_screen.css" type="text/css" charset="utf-8">
+  <script src="busy_screen.js"></script>
+  <style>
+.hidden {
+  display: none;
+}
+
+#connectPage {
+  position: absolute;
+  height: 150px;
+  width: 150px;
+
+  /* Center box */
+  top: 0; left: 0; bottom: 0; right: 0;
+  margin: auto;
+}
+#btnConnect {
+  width: 100%;
+  height: 100%;
+
+  border: 2px solid black;
+  border-radius: 15%;
+}
+#btnConnectLens {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 10px;
+  right: 10px;
+
+  border: 2px solid black;
+  border-radius: 50%;
+}
+
+#settingsPage {
+  max-width: 600px;
+  margin: auto;
+}
+
+#fsInfo label {
+  width: 30px;
+  display: inline-block;
+}
+
+#batteryDisplay {
+  margin: 0px 2px;
+  padding: 1px;
+  border: 1px solid black;
+}
+#batteryDisplay span {
+  padding: 0 5px;
+  margin: 1px;
+}
+
+#fsSettings label {
+  width: 160px;
+  display: inline-block;
+}
+
+#inpDeviceName {
+  width: 21ex;
+}
+
+#fsSettings select {
+  width: 150px;
+}
+
+#outLog {
+  background-color: lightgrey;
+  overflow: auto;
+}
+
+
+#divCopyright {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  margin: 5px;
+  border-radius: 5px;
+
+  /* Only show the copyright symbol at first, show rest on hover */
+  width: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: all 1s ease-in;
+}
+#divCopyright:hover {
+  width: 600px;
+  background-color: white;
+}
+#divCopyright A {
+  color: black;
+  text-decoration: none;
+}
+  </style>
+  
+</head>
+<body>
+  <div id="connectPage">
+    <button id="btnConnect"><div id="btnConnectLens"></div>Connect to SnapCam™</button>
+  </div>
+
+  <div id="settingsPage" class="hidden">
+  <form id="frmSettings" action="javascript:void(0);">
+
+    <button id="btnDisconnect">Disconnect</button>
+    <fieldset id="fsInfo">
+      <legend>Info</legend>
+      <div><label for="outProductVersion">V</label><output id="outProductVersion"></output></div>
+      <div><label for='outStorageTotal'>📂 </label><output id="outStorageTotal">?</output> MB -- <output id="outStorageFree">?</output> MB Free </div>
+      <div><label>🔋</label><span id='batteryDisplay'> <span></span> <span></span> <span></span> <span></span> <span></span> </span> </div>
+    </fieldset>
+
+    <fieldset id="fsSettings">
+      <legend>Settings</legend>
+      <div><label for="inpDeviceName">Device Name: </label><input id="inpDeviceName" type="text" maxlength="20"></input></div>
+      <div><label for="cbAutoRotation">Auto Rotation: </label><input id="cbAutoRotation" type="checkbox" checked></input></div>
+      <div><label for="selPhotoRes">Photo Resolution: </label><select id="selPhotoRes"><option>2MP</option><option selected>8MP</option></select></div>
+      <div><label for="selVideoRes">Video Resolution: </label><select id="selVideoRes"><option>WVGA</option><option selected>720p</option></select></div>
+      <div><label for="selTimelapseIval">Timelapse: </label><select id="selTimelapseIval"><option value="10" selected>Every 10 Sec</option><option value="30">Every 30 Sec</option><option value="60">Every 60 Sec</option></select></div>
+      <div><button id="btnSyncTime">Synchronize Device clock</button></div>
+    </fieldset>
+
+    <fieldset id="fsWifi">
+      <legend>WiFi</legend>
+      <div><button id="btnEnableWifi">Enable Wifi</button></div>
+      <div id="wifiInstructions" class="hidden">
+        <p>Instructions:</p>
+        <ol>
+          <li>Connect to WiFi access point</li>
+            <ul>
+              <li>SSID: <output id="outWifiSSID"></output></li>
+              <li>Password: <output id="outWifiPass"></output></li>
+            </ul>
+          <li>Go to: <a id="lnkWifiPage" href="" target="_blank"></a></li>
+          <li>When done disable WiFi by pushing the power button shortly on the device.</li>
+        </ol>
+      </div>
+    </fieldset>
+
+    <fieldset id="fsActions">
+      <legend>Actions</legend>
+    <div><button id="btnTakeImage">Take Image</button><button id="btnTimelapse">Start Timelapse</button><button id="btnRecordVideo">Record Video</button></div>
+    </fieldset>
+
+    <fieldset id="fsDebug">
+      <legend>Debug</legend>
+      <div><label for="cbEnableDebug">Enable Debug</label><input type="checkbox" id="cbEnableDebug"></div>
+      <div id="divDebugItems" class="hidden">
+        <fieldset id="fsDebugRawCmd">
+        <legend>Raw command:</legend>
+        <div><label for="inpRawCmd">Command: </label><input id="inpRawCmd" type="number" min=0></input></div>
+        <div><label for="inpRawArgs">Args: </label><input id="inpRawArgs" type="text" placeholder="JSON"></input></div>
+        <div><label for="inpRawResponse">Expect Response: </label><input id="inpRawResponse" type="checkbox"></input></div>
+        <div><button id="btnRawSend">Send</button></div>
+        </fieldset>
+        <p>Console:</p>
+        <pre id="outLog" style="border: 1px solid black; overflow: auto; height: 100px;"></pre>
+      </div>
+    </fieldset>
+
+  </form>
+  </div><!-- end settingsPage -->
+
+  <div id="divCopyright">
+    &copy;
+    <span id="spnCopyrightText">
+      License: <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><!--img alt="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /-->CC BY-NC-SA 4.0</a> | Copyright 2019 David Imhoff | Version: 0.1
+    </span>
+  </div><!-- end divCopyright -->
+
+  <script src="snapcamcontrol.js"></script>
+</body>
+</html>
