@@ -134,6 +134,9 @@ async function handleBtnConnectClick(evt) {
     // Get information from device
     await updateInfo();
 
+    // Sync Clock
+    await syncClock();
+
     // Hide wifi instructions
     document.getElementById('wifiInstructions').classList.add('hidden');
 
@@ -383,23 +386,27 @@ async function handleSelTimelapseIvalChange(evt) {
   }
 }
 
+async function syncClock() {
+  document.busyScreen.show("Synchronizing device clock...");
+
+  // Get time and format as: YYYYmmddHHMMss
+  const pad = (n) => (n < 10) ?  '0' + n : n.toString();
+  const now = new Date();
+  const dateStr = now.getFullYear() +
+    pad(now.getMonth() + 1) +
+    pad(now.getDate()) +
+    pad(now.getHours()) +
+    pad(now.getMinutes()) +
+    pad(now.getSeconds());
+
+  log("Setting time to: " + dateStr);
+
+  await sendCommand(15, {time: dateStr});
+}
+
 async function handleBtnSyncTimeClick(evt) {
   try {
-    document.busyScreen.show("Synchronizing device clock...");
-
-    // Get time and format as: YYYYmmddHHMMss
-    const pad = (n) => (n < 10) ?  '0' + n : n.toString();
-    const now = new Date();
-    const dateStr = now.getFullYear() +
-      pad(now.getMonth() + 1) +
-      pad(now.getDate()) +
-      pad(now.getHours()) +
-      pad(now.getMinutes()) +
-      pad(now.getSeconds());
-
-    log("Setting time to: " + dateStr);
-
-    await sendCommand(15, {time: dateStr});
+    await syncClock();
   } catch(e)  {
     log('Failed to set Date/Time: ' + e);
     alert('Failed to set Date/Time: ' + e);
