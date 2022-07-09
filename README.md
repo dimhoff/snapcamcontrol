@@ -24,6 +24,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API#Browser_compa
 The Web Bluetooth API also requires the page to be served on a HTTPS connection
 or locally.
 
+To get the Bluetooth API working in Chrome, you may need to enable these options:
+ - chrome://flags/#enable-experimental-web-platform-features
+ - chrome://flags/#enable-web-bluetooth-new-permissions-backend
+
 # Usage
 1. Open the [snapcamcontrol.html](https://dimhoff.github.io/snapcamcontrol.html)
 2. Push the "Connect to SnapCam™" button
